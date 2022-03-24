@@ -8,6 +8,33 @@
 
 using namespace std;
 
+void replace_word_in_text(string::iterator& head, string::iterator& tail, string &text, string &targetword, string &replaceword)
+{
+    string testword;
+    if(distance(head, tail) == targetword.length())
+    {
+        for (int i = 0; i < targetword.length(); i++)
+        {
+            testword.push_back(*(head + i));
+        }
+        if (testword == targetword)
+        {
+            while (head != tail)
+            {
+                int head_tail_dist = distance(head, tail);
+                head = text.erase(head);
+                tail = (head + head_tail_dist) - 1;
+            }
+            for (int i = replaceword.length() - 1; i >= 0; i--)
+            {
+                head = text.insert(head, replaceword[i]);
+            }
+            head = head + replaceword.length();
+            tail = head;
+        }
+    }
+}
+
 bool InHistory(string& currentWord, vector<Word>& word_history)
 {
     if(word_history.empty())
@@ -71,9 +98,7 @@ void display_word_frequency(string &text)
 
     string::iterator head = text.begin();
     string::iterator tail = head;
-    string::iterator const end = text.end();
-
-
+    string::iterator end = text.end();
 
     while(head != end && tail != end)
     {
@@ -102,7 +127,7 @@ void display_word_frequency(string &text)
 
 }
 
-bool replace(string &text)
+void replace_text(string &text)
 {
     string targetword;
     string replaceword;
@@ -115,41 +140,30 @@ bool replace(string &text)
 
     string::iterator head = text.begin();
     string::iterator tail = head;
-    string::iterator const end = text.end();
 
-    string testword;
-
-    while(head != end && tail != end)
+    while(head != text.end() && tail != text.end())
     {
         if(!IsSeparator(*tail))
         {
             tail++;
+            if(tail == text.end())
+            {
+                replace_word_in_text(head, tail, text, targetword, replaceword);
+            }
         }
-        else if(distance(head, tail - 1) == targetword.length())
+        else
         {
-            testword.clear();
-            for(int i = 0; i < targetword.length(); i++)
-            {
-                testword.push_back(*(head + i));
-            }
-            if(testword == targetword)
-            {
-                if(replaceword.length() == targetword.length())
-                {
-
-                }
-                else if(replaceword.length() > targetword.length())
-                {
-
-                }
-                else if(replaceword.length() < targetword.length())
-                {
-
-                }
-            }
+            replace_word_in_text(head, tail, text, targetword, replaceword);
+            tail++;
+            head = tail;
         }
-
     }
+
+    ofstream output("input_text.txt", ofstream::out);
+    output << text;
+    output.close();
+    cout << "replacement process complete" << endl;
+    cout << "--------------------------------------------------------------------" << endl << endl;
 }
 
 int main(){
@@ -160,6 +174,7 @@ int main(){
     stringstream inputStream;
     inputStream << input.rdbuf();
     string text = inputStream.str();
+    input.close();
 
     int selection;
 
@@ -177,7 +192,7 @@ int main(){
         }
         else if(selection == 2)
         {
-            replace(text);
+            replace_text(text);
         }
         else if(selection == 9)
         {
