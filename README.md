@@ -13,9 +13,7 @@ Project Requirements
 
 How To Run
 ------------------------------------------
-1. Download the CS5103_ujn350_JonathanFlores executable file
-2. Download the input_text.txt file
-3. Make sure these two files are within the same directory
+1. Unzip the project contents
 4. Either populate the input_text.txt file with text of your choice, or keep the text already provided in the file
 5. Use command: ./CS5103_ujn350_JonathanFlores
 6. Follow prompts given by program to parse or manipulate the text file contents
