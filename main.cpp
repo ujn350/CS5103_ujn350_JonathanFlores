@@ -166,6 +166,84 @@ void replace_text(string &text)
     cout << "--------------------------------------------------------------------" << endl << endl;
 }
 
+void print_line(string::iterator text_head, string::iterator text_tail)
+{
+    while(text_head != text_tail)
+    {
+        cout << *text_head;
+        text_head++;
+    }
+    cout << endl;
+}
+
+bool grepline_linesearch(const string::iterator& line_head, const string::iterator& line_tail, string keyword)
+{
+    string::iterator text_head = line_head;
+    string::iterator text_tail = line_head;
+    string current_word;
+
+    while(text_head != line_tail && text_tail != line_tail)
+    {
+        if(!IsSeparator(*text_tail))
+        {
+            current_word.push_back(*text_tail);
+            text_tail++;
+            if(text_tail == line_tail)
+            {
+                if(current_word == keyword)
+                {
+                    print_line(line_head, line_tail);
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            if(current_word == keyword)
+            {
+                print_line(line_head, line_tail);
+                return true;
+            }
+            current_word.clear();
+            text_tail++;
+            text_head = text_tail;
+        }
+    }
+    return true;
+}
+
+void grepline(string &text)
+{
+    string keyword;
+    bool FinalLineParsed = 0;
+
+    cout << "------------------------- GREPLINE -------------------------" << endl;
+    cout << "Please enter the keyword: " << endl;
+    cin >> keyword;
+    cout << endl;
+
+    string::iterator line_head = text.begin();
+    string::iterator line_tail = text.begin();
+
+    while(!FinalLineParsed)
+    {
+        line_tail = line_head;
+        while(*line_tail != '\n' && line_tail != text.end())
+        {
+            line_tail++;
+        }
+        if(line_tail == text.end())
+        {
+            FinalLineParsed = 1;
+        }
+        grepline_linesearch(line_head, line_tail, keyword);
+        line_head = line_tail;
+        line_head++;
+    }
+
+    cout << "--------------------------------------------------------------------" << endl << endl;
+}
+
 int main(){
     cout << endl << "############################# STRINGS AND WORDS #############################" << endl << endl;
     cout << "reading text file contents..." << endl << endl;
@@ -183,6 +261,7 @@ int main(){
         cout << "What would you like to perform? Enter the integer associated with your selection." << endl;
         cout << "1: Display Word Frequency" << endl;
         cout << "2: Replace Words" << endl;
+        cout << "3: Grep Line" << endl;
         cout << "9: Quit" << endl;
         cin >> selection;
 
@@ -193,6 +272,10 @@ int main(){
         else if(selection == 2)
         {
             replace_text(text);
+        }
+        else if(selection == 3)
+        {
+            grepline(text);
         }
         else if(selection == 9)
         {
